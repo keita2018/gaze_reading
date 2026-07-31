@@ -1,0 +1,261 @@
+# ============================================================
+# gaze_reading_goal
+# Git管理対象:
+#   - src/
+#   - configs/
+#   - notebooks/（必要なNotebookのみ）
+#   - README.md / PROJECT_STRUCTURE.md
+#   - environment.yml / requirements*.txt
+#
+# Git管理対象外:
+#   - 仮想環境
+#   - 元データ・中間データ・処理済みデータ
+#   - 外部リポジトリ
+#   - 実験ログ
+#   - 学習済みモデル
+#   - 実験・分析で生成された outputs
+# ============================================================
+
+
+# ------------------------------------------------------------
+# Python
+# ------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.pytype/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Packaging / build
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+
+# ------------------------------------------------------------
+# Virtual environments
+# ------------------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+.conda/
+
+# 外部ベンチマーク内に仮想環境がある場合
+**/.venv/
+**/venv/
+
+
+# ------------------------------------------------------------
+# Environment variables / secrets
+# ------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+*.key
+*.pem
+*.crt
+credentials.json
+secrets.json
+
+
+# ------------------------------------------------------------
+# IDE / editor
+# ------------------------------------------------------------
+.vscode/
+.idea/
+*.code-workspace
+
+*.swp
+*.swo
+*~
+.history/
+
+
+# ------------------------------------------------------------
+# OS-generated files
+# ------------------------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+desktop.ini
+$RECYCLE.BIN/
+
+
+# ------------------------------------------------------------
+# Jupyter
+# ------------------------------------------------------------
+.ipynb_checkpoints/
+
+# Notebookの自動生成バックアップ
+*.nbconvert.ipynb
+
+
+# ------------------------------------------------------------
+# Project data
+#
+# PROJECT_STRUCTURE.md に記載された以下をすべて除外:
+#   data/raw/
+#   data/interim/
+#   data/processed/
+# ------------------------------------------------------------
+data/**
+
+# ディレクトリ構造だけ残す場合
+!data/
+!data/**/
+!data/**/.gitkeep
+!data/**/README.md
+
+
+# ------------------------------------------------------------
+# External repositories / third-party assets
+#
+# WebQAmGaze と zuco-benchmark は本体リポジトリへ直接含めない。
+# 必要なら将来 Git submodule として追加する。
+# ------------------------------------------------------------
+external/**
+
+# ディレクトリ構造・説明だけ残す場合
+!external/
+!external/.gitkeep
+!external/README.md
+
+
+# ------------------------------------------------------------
+# Logs
+# ------------------------------------------------------------
+logs/**
+*.log
+*.out
+*.err
+
+!logs/
+!logs/.gitkeep
+!logs/README.md
+
+
+# ------------------------------------------------------------
+# Generated experiment outputs
+#
+# outputs/ 以下には、評価結果、予測、モデル、図表、
+# 監査結果、最終リリース成果物などの生成物が多数あるため、
+# 原則としてGit管理しない。
+# ------------------------------------------------------------
+outputs/**
+
+# ディレクトリ構造・説明だけ残す場合
+!outputs/
+!outputs/.gitkeep
+!outputs/README.md
+
+# 論文用に手動選別した軽量成果物だけ管理したい場合は、
+# 例として outputs/paper/ にコピーして追跡する。
+!outputs/paper/
+!outputs/paper/**
+outputs/paper/**/*.joblib
+outputs/paper/**/*.pkl
+outputs/paper/**/*.pickle
+outputs/paper/**/*.npy
+outputs/paper/**/*.npz
+outputs/paper/**/*.parquet
+outputs/paper/**/*.mat
+
+
+# ------------------------------------------------------------
+# Models / serialized artifacts
+# ------------------------------------------------------------
+*.joblib
+*.pkl
+*.pickle
+*.onnx
+*.pt
+*.pth
+*.ckpt
+*.sav
+
+
+# ------------------------------------------------------------
+# Large scientific / tabular data
+# ------------------------------------------------------------
+*.mat
+*.h5
+*.hdf5
+*.npy
+*.npz
+*.parquet
+*.feather
+*.arrow
+
+# 圧縮データ・リリースバンドル
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+*.bz2
+*.xz
+
+
+# ------------------------------------------------------------
+# Temporary / cache files
+# ------------------------------------------------------------
+.cache/
+cache/
+tmp/
+temp/
+scratch/
+
+*.tmp
+*.temp
+*.bak
+*.orig
+
+
+# ------------------------------------------------------------
+# Office temporary files
+# ------------------------------------------------------------
+~$*.doc
+~$*.docx
+~$*.xls
+~$*.xlsx
+~$*.ppt
+~$*.pptx
+
+
+# ------------------------------------------------------------
+# Generated checksums / local release folders
+# ------------------------------------------------------------
+release/
+releases/
+SHA256SUMS
+SHA256SUMS.txt
+
+
+# ------------------------------------------------------------
+# Keep important project metadata
+# ------------------------------------------------------------
+!README.md
+!PROJECT_STRUCTURE.md
+!environment.yml
+!requirements.txt
+!requirements-*.txt
+!.gitignore
