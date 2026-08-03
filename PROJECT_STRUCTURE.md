@@ -7,7 +7,8 @@
 ```text
 gaze_reading_goal/
 ├── .venv/                         # プロジェクト用Python仮想環境
-├── configs/                       # 設定ファイル配置用（現在は空）
+├── configs/                       # 実験・評価設定
+│   └── iui_p0_confirmatory_config.json
 ├── data/                          # 入力・中間・処理済みデータ
 │   ├── raw/
 │   │   ├── onestop/
@@ -42,6 +43,11 @@ gaze_reading_goal/
 │           ├── soft_aoi_template/
 │           └── {subject_id}/
 │               └── soft_aoi/
+├── docs/                          # IUI確証評価の手順・記録文書
+│   ├── CONFIRMATORY_PROTOCOL.md
+│   ├── ETHICS_INQUIRY_TEMPLATE_JA.md
+│   ├── P0_EXECUTION_CHECKLIST.md
+│   └── P0_ISSUES.md
 ├── external/                      # 外部プロジェクト／ベンチマーク
 │   ├── OneStop-Eye-Movements/
 │   │   ├── .github/
@@ -79,6 +85,26 @@ gaze_reading_goal/
 │   │   └── models/
 │   ├── frozen_zuco_external_validation_v1_audit/
 │   ├── goal_measurement_participant_factorization_smoke/
+│   ├── iui_p0_confirmatory_TR_evaluation_v1/
+│   ├── iui_p0_confirmatory_TR_v1/
+│   │   ├── audit/
+│   │   ├── features/
+│   │   ├── manifests/
+│   │   ├── predictions/
+│   │   ├── sealed/
+│   │   └── text/
+│   ├── iui_p0_control_input_audit_v1/
+│   ├── iui_p0_protocol_lock_v1/
+│   ├── iui_p0_schema_binding_v1/
+│   ├── iui_p0_standard_controls_v1/
+│   ├── iui_p0_tr_backup_verification_v1/
+│   ├── iui_p0_tr_stage2_audit_v1/
+│   ├── iui_p0_tr_stage2_clone_v1/
+│   ├── iui_p0_tr_stage3_script_audit_v1/
+│   ├── iui_p0_unused_language_audit_v1/
+│   ├── iui_p1_provenance_candidate_inventory_v1/
+│   ├── iui_p1_provenance_evidence_v2/
+│   ├── iui_p1_rebuilt_figures_v1/
 │   ├── ivt_event_baseline_fixed/
 │   ├── ivt_event_baseline_fixed_benchmark_exact/
 │   ├── ivt_event_baseline_nested_threshold/
@@ -157,15 +183,41 @@ gaze_reading_goal/
 │   ├── webqamgaze_participant_trial_count_audit/
 │   ├── webqamgaze_repository_audit/
 │   ├── webqamgaze_selective_prediction_v1/
+│   ├── webqamgaze_tr_confirmatory_stage2_v1/
+│   ├── webqamgaze_tr_confirmatory_stage3a_v1/
+│   ├── webqamgaze_tr_confirmatory_stage3b_v1/
+│   ├── webqamgaze_tr_confirmatory_stage3c_v1/
 │   └── zuco_to_onestop_zero_shot_v1/
+├── scripts/                       # IUIパイプライン実行・凍結・検証
+│   ├── collect_iui_p1_provenance_candidates.ps1
+│   ├── freeze_iui_p0_confirmatory_snapshot.ps1
+│   ├── run_iui_p0_tr_confirmatory_evaluation.ps1
+│   ├── run_iui_p0_tr_freeze_only_v2.ps1
+│   ├── run_iui_p0_tr_stage2.ps1
+│   ├── run_iui_p0_tr_stage3_and_freeze.ps1
+│   └── verify_iui_p0_snapshot.py
 ├── src/                           # プロジェクトの実装コード
 │   ├── analysis/
+│   │   ├── audit_iui_p0_control_inputs.py
+│   │   ├── audit_iui_p0_tr_stage2_outputs.py
+│   │   ├── audit_iui_p0_tr_stage3_scripts.py
+│   │   ├── audit_iui_p0_unused_languages.py
 │   │   ├── audit_layer3_layout_shift.py
 │   │   ├── audit_layer4_crossfit_external_alignment.py
+│   │   ├── bind_iui_p0_exact_schemas.py
+│   │   ├── collect_iui_p1_provenance_evidence_v2.py
+│   │   ├── create_iui_p0_tr_stage2_clone.py
+│   │   ├── evaluate_iui_p0_tr_confirmatory.py
+│   │   ├── freeze_iui_p0_tr_unlabeled_artifacts.py
+│   │   ├── freeze_iui_p0_tr_unlabeled_artifacts_v2.py
 │   │   ├── generate_zuco_final_reporting.py
 │   │   ├── generate_zuco_final_representation_comparison.py
+│   │   ├── rebuild_iui_p1_figures_4_7.py
+│   │   ├── run_iui_p0_standard_controls.py
 │   │   ├── run_layer3_layout_residualization.py
-│   │   └── run_layer4_unlabeled_domain_alignment.py
+│   │   ├── run_layer4_unlabeled_domain_alignment.py
+│   │   ├── verify_iui_p0_tr_backup_copy.py
+│   │   └── verify_iui_p0_tr_unlabeled_freeze.py
 │   ├── data/                      # 取得、検査、監査、変換、特徴抽出
 │   │   ├── analyze_zuco_et_markers.py
 │   │   ├── audit_onestop_asc_structure.py
@@ -203,6 +255,7 @@ gaze_reading_goal/
 │   │   ├── prepare_webqamgaze_external_validation_stage2.py
 │   │   ├── prepare_webqamgaze_external_validation_stage3a.py
 │   │   ├── prepare_webqamgaze_external_validation_stage3c.py
+│   │   ├── prepare_webqamgaze_tr_confirmatory_stage2.py
 │   │   ├── resolve_webqamgaze_aoi_stage3b.py
 │   │   ├── resolve_webqamgaze_storage_stage1b.py
 │   │   ├── run_zuco_hard_aoi_all_subjects.py
@@ -253,7 +306,10 @@ YLS, YMD, YMS, YRH, YRK, YRP, YSD, YSL, YTL
 | `data/raw/` | 取得した元データを保存 |
 | `data/interim/` | 変換途中の中間データを保存 |
 | `data/processed/` | モデル入力などに使用する処理済みデータを保存 |
+| `configs/` | IUI確証評価などの設定を保存 |
+| `docs/` | 確証評価プロトコル、チェックリスト、課題記録を保存 |
 | `external/` | OneStop、WebQAmGaze、ZuCoベンチマークの外部資産を保存 |
+| `scripts/` | IUI評価パイプラインの実行、成果物凍結、検証を実装 |
 | `src/data/` | データ取得、監査、検査、変換、特徴抽出を実装 |
 | `src/models/` | ベースライン、頑健性評価、比較実験、外部検証を実装 |
 | `src/analysis/` | 最終集計、表現比較、ドメイン差監査と補正を実装 |

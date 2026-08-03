@@ -1,24 +1,31 @@
 # ============================================================
 # gaze_reading_goal
-# Git管理対象:
+#
+# 原則としてGit管理するもの:
 #   - src/
+#   - scripts/
 #   - configs/
-#   - notebooks/（必要なNotebookのみ）
+#   - docs/（公開可能な文書のみ）
+#   - notebooks/（必要なもののみ）
 #   - README.md / PROJECT_STRUCTURE.md
 #   - environment.yml / requirements*.txt
+#   - 実行用PowerShellスクリプト
 #
-# Git管理対象外:
+# 原則としてGit管理しないもの:
 #   - 仮想環境
-#   - 元データ・中間データ・処理済みデータ
+#   - raw / interim / processed data
 #   - 外部リポジトリ
 #   - 実験ログ
+#   - outputs
 #   - 学習済みモデル
-#   - 実験・分析で生成された outputs
+#   - sealed labels / trial-level predictions
+#   - 匿名査読用PDF・Word・提出パッケージ
+#   - ローカル絶対パスや秘密情報を含むファイル
 # ============================================================
 
 
 # ------------------------------------------------------------
-# Python
+# Python bytecode / caches / test artifacts
 # ------------------------------------------------------------
 __pycache__/
 *.py[cod]
@@ -31,35 +38,43 @@ __pycache__/
 .ruff_cache/
 .pyre/
 .pytype/
+.pyright/
+.hypothesis/
+.tox/
+.nox/
+
 .coverage
 .coverage.*
-htmlcov/
 coverage.xml
+htmlcov/
 
 # Packaging / build
 build/
 dist/
+site/
 *.egg-info/
 .eggs/
 pip-wheel-metadata/
 
 
 # ------------------------------------------------------------
-# Virtual environments
+# Virtual environments / local Python management
 # ------------------------------------------------------------
 .venv/
 venv/
 env/
 ENV/
 .conda/
+conda-bld/
 
-# 外部ベンチマーク内に仮想環境がある場合
+# 外部ベンチマーク内の専用環境も除外
 **/.venv/
 **/venv/
+**/.conda/
 
 
 # ------------------------------------------------------------
-# Environment variables / secrets
+# Environment variables / credentials / secrets
 # ------------------------------------------------------------
 .env
 .env.*
@@ -67,13 +82,28 @@ ENV/
 
 *.key
 *.pem
+*.p12
+*.pfx
 *.crt
+
 credentials.json
+credential.json
 secrets.json
+secret.json
+tokens.json
+token.json
+service-account*.json
+client_secret*.json
+
+# CLI / cloud credentials
+.osfcli.config
+.aws/
+.azure/
+.gcloud/
 
 
 # ------------------------------------------------------------
-# IDE / editor
+# IDE / editor / local history
 # ------------------------------------------------------------
 .vscode/
 .idea/
@@ -83,6 +113,7 @@ secrets.json
 *.swo
 *~
 .history/
+.localhistory/
 
 
 # ------------------------------------------------------------
@@ -96,28 +127,24 @@ ehthumbs.db
 Desktop.ini
 desktop.ini
 $RECYCLE.BIN/
+*:Zone.Identifier
 
 
 # ------------------------------------------------------------
 # Jupyter
 # ------------------------------------------------------------
 .ipynb_checkpoints/
-
-# Notebookの自動生成バックアップ
 *.nbconvert.ipynb
 
 
 # ------------------------------------------------------------
 # Project data
 #
-# PROJECT_STRUCTURE.md に記載された以下をすべて除外:
-#   data/raw/
-#   data/interim/
-#   data/processed/
+# data/ 配下は raw / interim / processed を含むため全除外。
+# ディレクトリ構造と説明ファイルだけ残せる。
 # ------------------------------------------------------------
 data/**
 
-# ディレクトリ構造だけ残す場合
 !data/
 !data/**/
 !data/**/.gitkeep
@@ -127,24 +154,27 @@ data/**
 # ------------------------------------------------------------
 # External repositories / third-party assets
 #
-# WebQAmGaze と zuco-benchmark は本体リポジトリへ直接含めない。
-# 必要なら将来 Git submodule として追加する。
+# OneStop, WebQAmGaze, zuco-benchmarkなどを本体へ直接含めない。
+# 将来必要になればGit submoduleとして別管理する。
 # ------------------------------------------------------------
 external/**
 
-# ディレクトリ構造・説明だけ残す場合
 !external/
 !external/.gitkeep
 !external/README.md
 
 
 # ------------------------------------------------------------
-# Logs
+# Logs / command transcripts
 # ------------------------------------------------------------
 logs/**
 *.log
 *.out
 *.err
+*.trace
+*.clixml
+transcript*.txt
+powershell_transcript*.txt
 
 !logs/
 !logs/.gitkeep
@@ -152,34 +182,76 @@ logs/**
 
 
 # ------------------------------------------------------------
-# Generated experiment outputs
+# Generated outputs
 #
-# outputs/ 以下には、評価結果、予測、モデル、図表、
-# 監査結果、最終リリース成果物などの生成物が多数あるため、
-# 原則としてGit管理しない。
+# 評価結果、予測、モデル、図表、監査、確認評価、P1/P2成果物を
+# 含むため、outputs/以下は原則すべてGit管理しない。
 # ------------------------------------------------------------
 outputs/**
 
-# ディレクトリ構造・説明だけ残す場合
 !outputs/
 !outputs/.gitkeep
 !outputs/README.md
 
-# 論文用に手動選別した軽量成果物だけ管理したい場合は、
-# 例として outputs/paper/ にコピーして追跡する。
-!outputs/paper/
-!outputs/paper/**
-outputs/paper/**/*.joblib
-outputs/paper/**/*.pkl
-outputs/paper/**/*.pickle
-outputs/paper/**/*.npy
-outputs/paper/**/*.npz
-outputs/paper/**/*.parquet
-outputs/paper/**/*.mat
+
+# ------------------------------------------------------------
+# Confirmatory-analysis safety
+#
+# outputs/全体を除外していても、将来の配置変更やallowlist追加時に
+# sealed labels・結合済み予測を誤って追跡しないための明示的規則。
+# ------------------------------------------------------------
+**/sealed/**
+**/*labels_sealed*
+**/*sealed_labels*
+**/*confirmatory_joined_trial_predictions*
+**/*joined_trial_predictions*
+**/*trial_level_predictions*
+**/*participant_level_predictions*
+**/*unblinded*
+**/*unsealed*
 
 
 # ------------------------------------------------------------
-# Models / serialized artifacts
+# Submission / manuscript / review packages
+#
+# 匿名査読版、Word/PDF、PCS入力資料、倫理レビュアーノート、
+# confidential情報を含む可能性があるためローカル管理とする。
+# ------------------------------------------------------------
+submission/**
+manuscript/**
+drafts/**
+review_package/**
+camera_ready/**
+
+!submission/
+!submission/.gitkeep
+!submission/README.md
+
+!manuscript/
+!manuscript/.gitkeep
+!manuscript/README.md
+
+# ルート直下へ一時保存されたOffice/PDF成果物
+/*.doc
+/*.docx
+/*.pdf
+/*.ppt
+/*.pptx
+/*.xls
+/*.xlsx
+
+# confidential / institution-specific notes
+docs/private/**
+docs/internal/**
+docs/confidential/**
+**/*confidential_reviewer*
+**/*ethics_reviewer_note_filled*
+**/*author_information*
+**/*conflict_information*
+
+
+# ------------------------------------------------------------
+# Serialized models / ML checkpoints
 # ------------------------------------------------------------
 *.joblib
 *.pkl
@@ -189,10 +261,11 @@ outputs/paper/**/*.mat
 *.pth
 *.ckpt
 *.sav
+*.model
 
 
 # ------------------------------------------------------------
-# Large scientific / tabular data
+# Large scientific / array / tabular artifacts
 # ------------------------------------------------------------
 *.mat
 *.h5
@@ -202,8 +275,18 @@ outputs/paper/**/*.mat
 *.parquet
 *.feather
 *.arrow
+*.edf
+*.asc
 
-# 圧縮データ・リリースバンドル
+# SQLite / local databases
+*.db
+*.sqlite
+*.sqlite3
+
+
+# ------------------------------------------------------------
+# Archives / downloaded bundles
+# ------------------------------------------------------------
 *.zip
 *.7z
 *.rar
@@ -216,22 +299,27 @@ outputs/paper/**/*.mat
 
 
 # ------------------------------------------------------------
-# Temporary / cache files
+# Temporary / cache / scratch
 # ------------------------------------------------------------
 .cache/
 cache/
 tmp/
 temp/
 scratch/
+.local/
+downloads/
 
 *.tmp
 *.temp
 *.bak
 *.orig
+*.old
+*.partial
+*.crdownload
 
 
 # ------------------------------------------------------------
-# Office temporary files
+# Office temporary / lock files
 # ------------------------------------------------------------
 ~$*.doc
 ~$*.docx
@@ -242,12 +330,15 @@ scratch/
 
 
 # ------------------------------------------------------------
-# Generated checksums / local release folders
+# Local release folders
+#
+# SHA256 manifests themselves may be scientifically useful, so
+# SHA256SUMSやmanifest名をグローバルには除外しない。
 # ------------------------------------------------------------
 release/
 releases/
-SHA256SUMS
-SHA256SUMS.txt
+local_release/
+local_releases/
 
 
 # ------------------------------------------------------------

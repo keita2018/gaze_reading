@@ -1,0 +1,78 @@
+{
+  "protocol_version": "1.0",
+  "freeze_date": "2026-08-03",
+  "random_seed": 20260803,
+  "source": {
+    "dataset": "OneStop",
+    "model_name": "full41",
+    "classifier": "LinearSVC",
+    "C": 0.01,
+    "decision_threshold": 0.010769,
+    "compact_secondary_C": 0.1,
+    "compact_secondary_threshold": 0.00281,
+    "frozen_model_root": "outputs/frozen_onestop_external_validation_v1",
+    "factorization_root": "outputs/linear_feature_group_factorization_v1",
+    "participant_calibration_root": "outputs/webqamgaze_participant_self_calibration_v1",
+    "selective_prediction_root": "outputs/final_factorized_selective_prediction_v1"
+  },
+  "quality_features": [
+    "valid_rate",
+    "active_rate",
+    "word_box_hit_rate",
+    "sentence_envelope_hit_rate",
+    "qmax_mean",
+    "qmax_median",
+    "qmax_q10",
+    "qmax_ge_0_5_rate",
+    "nearest_distance_mean_word_heights",
+    "nearest_distance_median_word_heights",
+    "nearest_distance_q90_word_heights",
+    "nearest_distance_q95_word_heights"
+  ],
+  "primary_methods": [
+    "frozen_full41",
+    "participant_median_loo",
+    "qcn_only",
+    "qcn_pc"
+  ],
+  "development_controls": [
+    "participant_mean_loo",
+    "participant_median_mad",
+    "participant_rank_normalization",
+    "content_only_29_retrained_on_onestop",
+    "random_12_feature_neutralization_100_seeds"
+  ],
+  "target_selection": {
+    "collection": "WebQAmGaze",
+    "exclude_languages": ["EN"],
+    "minimum_unique_participants": 40,
+    "maximum_feature_extraction_failure_rate": 0.20,
+    "selection_order": [
+      "largest_eligible_unique_participant_count",
+      "largest_eligible_trial_count",
+      "alphabetical_iso_language_code"
+    ],
+    "expected_primary_candidate_from_prior_inventory": "TR"
+  },
+  "primary_estimand": {
+    "metric": "roc_auc",
+    "contrast": "qcn_pc_minus_participant_median_loo"
+  },
+  "statistics": {
+    "participant_cluster_bootstrap_replicates": 2000,
+    "within_participant_label_permutations": 2000,
+    "confidence_interval": 0.95
+  },
+  "selective_prediction": {
+    "confidence": "abs(score_qcn_pc - frozen_threshold)",
+    "coverage": [1.0, 0.5, 0.2],
+    "modes": ["global", "participant_balanced"]
+  },
+  "labels": {
+    "positive": "NR",
+    "positive_value": 1,
+    "negative": "IS",
+    "negative_value": 0
+  },
+  "output_root_template": "outputs/iui_p0_confirmatory_{language}_v1"
+}
